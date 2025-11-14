@@ -1,0 +1,96 @@
+select Telefone, count(*) tentativas from bilhetesDia where ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+GROUP BY Telefone
+ORDER BY tentativas Desc
+
+select contrato, count(*) tentativas from bilhetesDia where ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+GROUP BY contrato
+ORDER BY tentativas Desc
+
+select * from bilhetesDia where ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+
+
+select * from bilhetes WHERE ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+and DATA = '2025-10-25'
+
+SELECT* FROM bilhetesDia WHERE ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+AND contrato in ('54221648')
+
+select contrato, count(*) tentativas from bilhetes where ACD in ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+and ModoDiscagem = 'Preditivo'
+and DATA >= '2025-10-01'
+GROUP BY contrato
+ORDER BY tentativas Desc
+
+
+select * from bilhetesDia where contrato = '6673443'
+and HoraInicio >= '20:00:00'
+
+SELECT 
+    contrato,
+    COUNT(*) AS tentativas
+FROM (
+    SELECT contrato, ACD, ModoDiscagem, DATA 
+    FROM bilhetes
+    WHERE ACD IN ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+      AND ModoDiscagem = 'Preditivo'
+      AND DATA >= '2025-10-01'
+    
+    UNION ALL
+    
+    SELECT contrato, ACD, ModoDiscagem, DATA
+    FROM bilhetesDia
+    WHERE ACD IN ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6018','6022','6023')
+      AND ModoDiscagem = 'Preditivo'
+) AS total
+GROUP BY contrato
+ORDER BY tentativas DESC;
+
+
+SELECT
+    TELEFONE, 
+    CONTRATO, 
+    DOCUMENTO,
+    COUNT(*) AS DISCADO,
+    SUM(CASE WHEN ATENDENTE IS NOT NULL THEN 1 ELSE 0 END) AS ATENDIDAS, 
+    SUM(CASE WHEN Resultado IN (
+        'Abandonada','Atendida e Reagendado pelo CRM no mesmo Fone','Congestionamento no Agente',
+        'Atendida e Finalizada pelo CRM','Cliente nao atendeu','Ocupado','AD Chamada transferida para o atendente',
+        'Atendida e nao Finalizada pelo CRM','Atendida pelo Agente Digital','AD Respondeu não é a pessoa',
+        'AD Respondeu que não conhece a pessoa','AD Congestionamento no AD','AD Respondeu que conhece a pessoa',
+        'AD Cliente não respondeu'
+    ) THEN 1 ELSE 0 END) AS CONNECT,
+    SUM(CASE WHEN Resultado = 'Gravacao de voz Detectada' THEN 1 ELSE 0 END) AS GRAVACAO_VOZ_DETECTADA,
+    SUM(CASE WHEN Resultado = 'Mensagem Da Operadora' THEN 1 ELSE 0 END) AS MENSAGEM_OPERADORA,
+    SUM(CASE WHEN Resultado = 'Caixa Postal' THEN 1 ELSE 0 END) AS CAIXA_POSTAL,
+    SUM(CASE WHEN Resultado = 'Falha de sinalizacao-Nao Completa' THEN 1 ELSE 0 END) AS FALHA_DE_SINALIZACAO_NAO_COMPLETA,
+    SUM(CASE WHEN Resultado = 'Telefone Invalido' THEN 1 ELSE 0 END) AS TELEFONE_INVALIDO,
+    SUM(CASE WHEN finalizacao = 'DESCONHECE CLIENTE' THEN 1 ELSE 0 END) AS DESCONHECE_CLIENTE,
+    CASE 
+        WHEN LEN(DOCUMENTO) > 11 THEN 'Pessoa Juridica' 
+        ELSE 'Pessoa Fisica' 
+    END AS TipoPessoa,
+
+    -- Percentual de inválidos arredondado sem casas decimais e com símbolo %
+    CONCAT(
+        CAST(
+            ROUND(
+                (SUM(CASE WHEN Resultado = 'Telefone Invalido' THEN 1 ELSE 0 END) * 100.0)
+                / COUNT(*),
+                0
+            ) AS INT
+        ),
+        '%'
+    ) AS PCT_INVALIDO_TOTAL
+
+FROM bilhetes
+WHERE 
+    ACD IN ('4011','4025','4017','4055','4007','4016','2019','4019','2002','4054','2031','4018','4083','6016','6022','6023')
+    AND data >= DATEADD(day, -180, GETDATE())
+    AND ModoDiscagem = 'Preditivo'
+GROUP BY 
+    TELEFONE, CONTRATO, DOCUMENTO;

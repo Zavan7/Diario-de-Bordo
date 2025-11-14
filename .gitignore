@@ -1,0 +1,94 @@
+ # ---------------------------------------
+# PYTHON
+# ---------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv/
+venv/
+env/
+
+# Bytecode cache
+*.pyo
+*.pyd
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs
+*.log
+logs/
+log/
+
+# ---------------------------------------
+# RPA TOOLS (Playwright / Selenium / Browser)
+# ---------------------------------------
+
+# Playwright downloads
+playwright-report/
+playwright/.cache/
+test-results/
+*.spec.ts
+
+# Browser drivers (Selenium / ChromeDriver / GeckoDriver)
+chromedriver.exe
+geckodriver.exe
+chromedriver
+geckodriver
+drivers/
+webdriver/
+*.crdownload
+
+# Har files
+*.har
+
+# Screenshots / recordings
+screenshots/
+recordings/
+
+# ---------------------------------------
+# CONFIGS E SEGREDOS
+# ---------------------------------------
+*.env
+.env.*
+*.ini
+config.json
+secret.json
+credentials.json
+tokens.json
+
+# ---------------------------------------
+# IDEs / EDITORES
+# ---------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# ---------------------------------------
+# WINDOWS
+# ---------------------------------------
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------
+# OUTROS
+# ---------------------------------------
+*.sqlite
+*.db
+.cache/
+temp/
+tmp/
+
+# Bloquear planilhas e arquivos de dados
+*.xlsx
+*.xls
+*.ods
+*.csv
+*.tsv
